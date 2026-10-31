@@ -52,7 +52,7 @@
 
 | Referencia | Detalle |
 | --- | --- |
-| Clase mayoritaria | La clase mayoritaria es **monilia** (61,4 %), así que la línea base predice todo como enfermo: exactitud aproximada de 0,61 y *recall* de monilia de 1,00, con todas las sanas como falsa alarma. El MLP debe superar esa exactitud **sin** bajar el *recall* de 0,90. Ambas cifras se reportan en el conjunto de prueba. |
+| Clase mayoritaria | La clase mayoritaria es **monilia** (61,4 %) |
 | ¿La modalidad aplanada resume un escalar? | Sí: **% de píxeles «marrón lesión»** (umbral HSV) |
 | Escalar crudo usado solo | Clasificador de un solo umbral sobre ese %, con el umbral elegido en validación y el desempeño reportado en prueba. |
 | Partición y semilla | Partición estratificada 70/15/15, `seed = 42`. Los casi duplicados (pHash ≤ 5) quedan **en el mismo subconjunto** (`GroupShuffleSplit`). Se conserva para la Fase 2. |
