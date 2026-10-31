@@ -1,4 +1,4 @@
-# 🍫 CentinelaCacaoDeepLearning
+# 🍫 Centinela Cacao DeepLearning
 
 Sistema de alerta temprana de **monilia** (*Moniliophthora roreri*) en mazorcas de cacao, con *deep learning* sobre fotos y datos climáticos.
 
