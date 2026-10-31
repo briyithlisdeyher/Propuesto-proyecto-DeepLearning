@@ -23,7 +23,7 @@
 
 | Modalidad | Fuente (productor primario) | Enlace o DOI | Licencia y versión | Dónde se verificó la licencia | ¿Datos de personas? |
 | --- | --- | --- | --- | --- | --- |
-| Imagen | Rengifo-Lozano y Sánchez-Flores, *Image Dataset of Healthy and Monilia-Infected Cocoa Pods* (Mendeley Data, v1, 2026-10-08) | https://doi.org/10.17632/ykbtpsyfv9.1 | CC BY 4.0 | Ficha del DOI en Mendeley Data (2026-10-30) | No previstos (mazorcas). ⚠ Revisar manos/rostros en las fotos y GPS en el EXIF (anexo C) |
+| Imagen | Rengifo-Lozano y Sánchez-Flores, *Image Dataset of Healthy and Monilia-Infected Cocoa Pods* (Mendeley Data, v1, 2026-10-08) | https://doi.org/10.17632/ykbtpsyfv9.1 | CC BY 4.0 | Ficha del DOI en Mendeley Data (2026-10-30) | No previstos (mazorcas).|
 | Temporal | NASA Langley Research Center, POWER Project (API diaria, comunidad AG) | https://power.larc.nasa.gov/ | Datos NASA de libre uso, con atribución | Página de la fuente | No |
 
 ## 4. Por qué NO es un reto resuelto
