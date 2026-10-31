@@ -8,7 +8,7 @@
 | Campo | Detalle |
 | --- | --- |
 | Título del proyecto | **Centinela del Cacao: alerta temprana de monilia (*Moniliophthora roreri*) en mazorcas** |
-| Integrantes | _(nombre completo)_ |
+| Integrantes | _Briyith Lisdey Herrera Cruz_  _Juan Pablo Becerra Tirano_  _Johnatan Vélez Martínez_|
 | Fecha | 2026-10-30 |
 | Versión | v1 (Fase 1) |
 
