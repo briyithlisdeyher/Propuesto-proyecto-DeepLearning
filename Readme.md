@@ -15,7 +15,7 @@ Proyecto del curso **Deep Learning** de la **Maestría en Ciencia de Datos** de 
 
 A partir de la foto de una mazorca, el sistema dice si tiene monilia. En una segunda fase combina esa foto con el clima de las semanas anteriores para emitir una alerta más temprana. Está pensado como apoyo para los técnicos de la Federación Nacional de Cacaoteros (Fedecacao).
 
-El detalle del problema, los datos y las decisiones de diseño está en la **El detalle del problema, los datos y las decisiones de diseño está en la [Propuesta de Datos · Fase 1](<Propuesta_de_datos.md>).**.
+El detalle del problema, los datos y las decisiones de diseño está en la **El detalle del problema, los datos y las decisiones de diseño está en la [Propuesta de Datos](<Propuesta_de_datos.md>).**.
 
 ## Estado del proyecto
 
