@@ -10,15 +10,12 @@ Proyecto del curso **Deep Learning** de la **Maestría en Ciencia de Datos** de 
 - Juan Pablo Becerra Tirano
 - Johnatan Vélez Martínez
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)
-![Estado](https://img.shields.io/badge/estado-Fase%201-yellow)
 
 ## Descripción
 
 A partir de la foto de una mazorca, el sistema dice si tiene monilia. En una segunda fase combina esa foto con el clima de las semanas anteriores para emitir una alerta más temprana. Está pensado como apoyo para los técnicos de la Federación Nacional de Cacaoteros (Fedecacao).
 
-El detalle del problema, los datos y las decisiones de diseño está en la **[Propuesta de Datos · Fase 1](PROPUESTA_DE_DATOS_FASE1.md)**.
+El detalle del problema, los datos y las decisiones de diseño está en la **[Propuesta de Datos · Fase 1](Propuesta de Datos · Fase 1.md)**.
 
 ## Estado del proyecto
 
