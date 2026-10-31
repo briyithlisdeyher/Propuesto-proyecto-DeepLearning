@@ -66,7 +66,6 @@
 | Etiqueta de estadio (temprana/avanzada) puesta por un no experto (Fase 2) | El modelo aprende el criterio del estudiante, no el de un fitopatólogo, y el estadio que se informa puede estar equivocado | Protocolo escrito con fotos de referencia, kappa de reetiquetado reportado y la alerta binaria (que usa la etiqueta original de los autores) como salida principal |
 | Alarma omitida (mazorca enferma marcada como sana) | La mazorca esporula y contagia el lote, con pérdida de cosecha y de ingreso del pequeño productor | Exigir *recall* de monilia ≥ 0,90 en validación; analizar los falsos negativos con Grad-CAM (Fase 2); mensaje al usuario: «sin alerta ≠ sano» |
 
-El checklist de protección de datos va en el anexo C, uno por fuente. Principio del Marco Ético para la IA en Colombia que se discute: **transparencia y explicación** (informar al cliente la tasa de falsos negativos y positivos en lenguaje claro).
 
 ## 8. Cita APA 7 de cada fuente
 
