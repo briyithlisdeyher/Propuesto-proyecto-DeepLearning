@@ -1,10 +1,5 @@
 # Propuesta de Datos · Proyecto Centinela · Fase 1
 
-> Formato oficial del curso: secciones 0 a 8 (una página) y anexos A, B y C (no cuentan en la extensión).
-> Los campos marcados con **⚠ POR VERIFICAR** se llenan después de correr `src/` sobre los datos descargados. No se inventan.
-
-## 0. Encabezado
-
 | Campo | Detalle |
 | --- | --- |
 | Título del proyecto | **Centinela del Cacao: alerta temprana de monilia (*Moniliophthora roreri*) en mazorcas** |
