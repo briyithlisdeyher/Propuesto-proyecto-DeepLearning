@@ -46,7 +46,7 @@
   - **Salvedad de rasgo casi constante:** si todas las fotos son de pocos meses, el clima casi no varía y no discrimina. Se reporta así.
   - **Si el EXIF no trae fecha ni lugar:** se escribe a los autores y la v1 declara la clave como (región declarada, periodo de publicación), con la limitación explícita.
   - **Retardo biológico:** los síntomas visibles aparecen semanas después de la infección. Por eso la ventana climática asociada a cada foto son los **60 días previos** al mes de captura, no el mismo día.
-- **Prueba de acoplamiento:** diez filas reales en el anexo A.
+
 
 ## 6. Línea base comprometida
 
