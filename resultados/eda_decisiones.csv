@@ -1,0 +1,9 @@
+Hallazgo,Decisión
+Balance de 769 afectadas frente a 791 sanas (por diseño del muestreo),Partición estratificada; la línea base es la clase mayoritaria
+"4 fotos por planta, probablemente 2 hojas × 2 caras",Partición agrupada por planta
+67 grupos de duplicados byte a byte entre plantas; 27 con clase distinta,Se conservan y se agrupan; no se corrigen a mano
+Sin NaN; ceros biológicos en los rasgos de lesión,Sin imputación
+Atípicos concentrados en roya 3–4,Se conservan (son señal)
+Rasgos muy colineales; pct_verde = 1 − pct_lesion,"Se conservan todos, salvo pct_verde"
+Clase no asociada al celular ni al día; celular y día confundidos entre sí,Se excluye el dispositivo de X; errores por celular en el paso 11
+Fecha EXIF en todas las fotos (5 días),"Clave temporal (CIIDEA, fecha) para la Fase 2"

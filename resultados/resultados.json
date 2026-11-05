@@ -1,0 +1,484 @@
+{
+  "fecha_ejecucion": "2026-11-04",
+  "semilla": 42,
+  "procedencia": {
+    "fecha_descarga_local": "2026-11-03",
+    "verificacion": {
+      "Annotations|coincide": 4,
+      "Photos|coincide": 1000,
+      "Photos|no listado": 560
+    }
+  },
+  "huella_crudeza": {
+    "anotaciones_csv_filas_x_columnas_crudo": "1560 × 18",
+    "pct_faltantes_csv_global": 23.5,
+    "columnas_csv_100pct_vacias": [
+      "Benchmark Agreement",
+      "Benchmark ID",
+      "Benchmark Reference ID"
+    ],
+    "imagenes": 1560,
+    "plantas": 390,
+    "cultivos": 12,
+    "hojas_inferidas": 780,
+    "balance_afectada": {
+      "0": 791,
+      "1": 769
+    },
+    "clases_multiclase": {
+      "sana": 791,
+      "ácaro rojo": 167,
+      "roya 1": 344,
+      "roya 2": 166,
+      "roya 3": 62,
+      "roya 4": 30
+    },
+    "resoluciones": {
+      "1280x720": 479,
+      "2048x1152": 768,
+      "4128x2322": 313
+    },
+    "dispositivos": {
+      "samsung SM-J200M": 611,
+      "samsung SM-J700M": 488,
+      "samsung SM-G610M": 313,
+      "samsung SM-J320H": 148
+    },
+    "fechas_captura": {
+      "2019-04-09": 92,
+      "2019-04-10": 422,
+      "2019-04-11": 766,
+      "2019-05-01": 132,
+      "2019-05-02": 148
+    },
+    "imagenes_con_gps": 0,
+    "duplicados_exactos_grupos": 67,
+    "duplicados_exactos_imagenes": 134,
+    "duplicados_misma_clase_multi": 40,
+    "duplicados_misma_clase_binaria": 66,
+    "nombres_anomalos": [
+      "C11P11HE.jpg"
+    ],
+    "inconsistencias_estado_vs_clase": 8,
+    "nan_en_rasgos": 0
+  },
+  "eda_auditoria": {
+    "nan_total": 0,
+    "pct_atipicos_medio": 3.2
+  },
+  "eda_auc_univariado_top5": {
+    "pct_amarillo": 0.876,
+    "pct_naranja": 0.869,
+    "pct_verde": 0.752,
+    "pct_lesion": 0.752,
+    "std_H": 0.703
+  },
+  "eda_multicolinealidad": {
+    "pares_spearman_mayor_0_9": 14,
+    "rasgos_vif_mayor_10": 19
+  },
+  "eda_v_cramer": {
+    "dispositivo": 0.028,
+    "fecha_txt": 0.024,
+    "cara": 0.005,
+    "cultivo": 0.045
+  },
+  "grupos": {
+    "plantas": 390,
+    "grupos": 342,
+    "casi_duplicados_phash_no_exactos": 15,
+    "tam_max_grupo": 92
+  },
+  "particion": [
+    {
+      "subconjunto": "entrenamiento",
+      "imagenes": 1092,
+      "grupos": 234,
+      "pct_afectada": 0.493,
+      "pct_imagenes": 0.7
+    },
+    {
+      "subconjunto": "validacion",
+      "imagenes": 232,
+      "grupos": 55,
+      "pct_afectada": 0.483,
+      "pct_imagenes": 0.149
+    },
+    {
+      "subconjunto": "prueba",
+      "imagenes": 236,
+      "grupos": 53,
+      "pct_afectada": 0.504,
+      "pct_imagenes": 0.151
+    }
+  ],
+  "R0_validacion": {
+    "umbral": 0.5,
+    "exactitud": 0.8017,
+    "auc": 0.8967,
+    "precision_afectada": 0.83,
+    "recall_afectada": 0.7411,
+    "f1_afectada": 0.783,
+    "precision_sana": 0.7803,
+    "recall_sana": 0.8583,
+    "f1_sana": 0.8175,
+    "VP": 83,
+    "FN": 29,
+    "FP": 17,
+    "VN": 103,
+    "costo": 162
+  },
+  "corridas": [
+    {
+      "corrida": "R0",
+      "ocultas": "(16, 8)",
+      "dropout": 0.0,
+      "weight_decay": 0.0,
+      "parada_temprana": false,
+      "epocas_ejecutadas": 50,
+      "epoca_min_val": 42,
+      "perdida_min_val": 0.4185,
+      "perdida_train_en_min": 0.3908,
+      "brecha_en_min": 0.0276,
+      "brecha_final": 0.0697,
+      "auc_val_modelo_usado": 0.8967
+    },
+    {
+      "corrida": "R1",
+      "ocultas": "(256, 128)",
+      "dropout": 0.0,
+      "weight_decay": 0.0,
+      "parada_temprana": false,
+      "epocas_ejecutadas": 1500,
+      "epoca_min_val": 30,
+      "perdida_min_val": 0.3695,
+      "perdida_train_en_min": 0.2343,
+      "brecha_en_min": 0.1352,
+      "brecha_final": 1.9892,
+      "auc_val_modelo_usado": 0.9113
+    },
+    {
+      "corrida": "R1-ES",
+      "ocultas": "(256, 128)",
+      "dropout": 0.0,
+      "weight_decay": 0.0,
+      "parada_temprana": true,
+      "epocas_ejecutadas": 55,
+      "epoca_min_val": 30,
+      "perdida_min_val": 0.3695,
+      "perdida_train_en_min": 0.2343,
+      "brecha_en_min": 0.1352,
+      "brecha_final": 0.4099,
+      "auc_val_modelo_usado": 0.9413
+    },
+    {
+      "corrida": "R2",
+      "ocultas": "(16, 8)",
+      "dropout": 0.3,
+      "weight_decay": 0.0,
+      "parada_temprana": true,
+      "epocas_ejecutadas": 153,
+      "epoca_min_val": 128,
+      "perdida_min_val": 0.3607,
+      "perdida_train_en_min": 0.3052,
+      "brecha_en_min": 0.0555,
+      "brecha_final": 0.0842,
+      "auc_val_modelo_usado": 0.9419
+    },
+    {
+      "corrida": "R3a",
+      "ocultas": "(8, 4)",
+      "dropout": 0.3,
+      "weight_decay": 0.0,
+      "parada_temprana": true,
+      "epocas_ejecutadas": 190,
+      "epoca_min_val": 165,
+      "perdida_min_val": 0.3239,
+      "perdida_train_en_min": 0.3222,
+      "brecha_en_min": 0.0018,
+      "brecha_final": 0.0222,
+      "auc_val_modelo_usado": 0.9427
+    },
+    {
+      "corrida": "R3b",
+      "ocultas": "(64, 32)",
+      "dropout": 0.3,
+      "weight_decay": 0.0,
+      "parada_temprana": true,
+      "epocas_ejecutadas": 122,
+      "epoca_min_val": 97,
+      "perdida_min_val": 0.3271,
+      "perdida_train_en_min": 0.2165,
+      "brecha_en_min": 0.1106,
+      "brecha_final": 0.1494,
+      "auc_val_modelo_usado": 0.9482
+    },
+    {
+      "corrida": "R4",
+      "ocultas": "(16, 8)",
+      "dropout": 0.3,
+      "weight_decay": 0.001,
+      "parada_temprana": true,
+      "epocas_ejecutadas": 148,
+      "epoca_min_val": 123,
+      "perdida_min_val": 0.3586,
+      "perdida_train_en_min": 0.3125,
+      "brecha_en_min": 0.0462,
+      "brecha_final": 0.0771,
+      "auc_val_modelo_usado": 0.9429
+    }
+  ],
+  "modelo_final": "R3a",
+  "prueba": {
+    "umbral": 0.22,
+    "umbral_escalar": 0.0045191926995185785,
+    "n": 236,
+    "mlp": {
+      "umbral": 0.22,
+      "exactitud": 0.822,
+      "auc": 0.9357,
+      "precision_afectada": 0.7484,
+      "recall_afectada": 0.9748,
+      "f1_afectada": 0.8467,
+      "precision_sana": 0.963,
+      "recall_sana": 0.6667,
+      "f1_sana": 0.7879,
+      "VP": 116.0,
+      "FN": 3.0,
+      "FP": 39.0,
+      "VN": 78.0,
+      "costo": 54.0
+    },
+    "escalar": {
+      "umbral": 0.0045,
+      "exactitud": 0.6314,
+      "auc": 0.7887,
+      "precision_afectada": 0.5784,
+      "recall_afectada": 0.9916,
+      "f1_afectada": 0.7307,
+      "precision_sana": 0.9688,
+      "recall_sana": 0.265,
+      "f1_sana": 0.4161,
+      "VP": 118.0,
+      "FN": 1.0,
+      "FP": 86.0,
+      "VN": 31.0,
+      "costo": 91.0
+    },
+    "mayoritaria": {
+      "umbral": 0.5,
+      "exactitud": 0.4958,
+      "auc": 0.5,
+      "precision_afectada": 0.0,
+      "recall_afectada": 0.0,
+      "f1_afectada": 0.0,
+      "precision_sana": 0.4958,
+      "recall_sana": 1.0,
+      "f1_sana": 0.6629,
+      "VP": 0.0,
+      "FN": 119.0,
+      "FP": 0.0,
+      "VN": 117.0,
+      "costo": 595.0
+    }
+  },
+  "subgrupos": {
+    "por_clase": {
+      "sana": 0.333,
+      "ácaro rojo": 0.964,
+      "roya 1": 0.964,
+      "roya 2": 1.0,
+      "roya 3": 1.0,
+      "roya 4": 1.0
+    },
+    "por_clase_n": {
+      "sana": 117,
+      "ácaro rojo": 28,
+      "roya 1": 55,
+      "roya 2": 26,
+      "roya 3": 6,
+      "roya 4": 4
+    },
+    "por_cara": {
+      "envés": {
+        "n": 118.0,
+        "n_afectadas": 59.0,
+        "recall_afectada": 0.983,
+        "tasa_FP_sanas": 0.373
+      },
+      "haz": {
+        "n": 118.0,
+        "n_afectadas": 60.0,
+        "recall_afectada": 0.967,
+        "tasa_FP_sanas": 0.293
+      }
+    },
+    "por_dispositivo": {
+      "samsung SM-G610M": {
+        "n": 44.0,
+        "n_afectadas": 24.0,
+        "recall_afectada": 0.958,
+        "tasa_FP_sanas": 0.1
+      },
+      "samsung SM-J200M": {
+        "n": 83.0,
+        "n_afectadas": 42.0,
+        "recall_afectada": 1.0,
+        "tasa_FP_sanas": 0.537
+      },
+      "samsung SM-J320H": {
+        "n": 24.0,
+        "n_afectadas": 12.0,
+        "recall_afectada": 1.0,
+        "tasa_FP_sanas": 0.167
+      },
+      "samsung SM-J700M": {
+        "n": 85.0,
+        "n_afectadas": 41.0,
+        "recall_afectada": 0.951,
+        "tasa_FP_sanas": 0.295
+      }
+    },
+    "por_fecha": {
+      "2019-04-09": {
+        "n": 12.0,
+        "n_afectadas": 7.0,
+        "recall_afectada": 1.0,
+        "tasa_FP_sanas": 0.2
+      },
+      "2019-04-10": {
+        "n": 52.0,
+        "n_afectadas": 25.0,
+        "recall_afectada": 0.96,
+        "tasa_FP_sanas": 0.407
+      },
+      "2019-04-11": {
+        "n": 124.0,
+        "n_afectadas": 64.0,
+        "recall_afectada": 0.969,
+        "tasa_FP_sanas": 0.317
+      },
+      "2019-05-01": {
+        "n": 24.0,
+        "n_afectadas": 11.0,
+        "recall_afectada": 1.0,
+        "tasa_FP_sanas": 0.462
+      },
+      "2019-05-02": {
+        "n": 24.0,
+        "n_afectadas": 12.0,
+        "recall_afectada": 1.0,
+        "tasa_FP_sanas": 0.167
+      }
+    }
+  },
+  "importancia_top5": {
+    "pct_naranja": 0.1433,
+    "pct_amarillo": 0.1018,
+    "std_R": 0.0859,
+    "exg": 0.0369,
+    "glcm_dissimilarity": 0.0324
+  },
+  "auditoria_paciencia": [
+    {
+      "paciencia": 10,
+      "epoca_detencion": 57,
+      "epoca_min_val": 47,
+      "perdida_min_val": 0.4312,
+      "auc_val": 0.893,
+      "umbral_val": 0.26,
+      "recall_val": 0.9643,
+      "precision_val": 0.6467,
+      "costo_val": 79
+    },
+    {
+      "paciencia": 25,
+      "epoca_detencion": 153,
+      "epoca_min_val": 128,
+      "perdida_min_val": 0.3607,
+      "auc_val": 0.9419,
+      "umbral_val": 0.2,
+      "recall_val": 0.9732,
+      "precision_val": 0.7415,
+      "costo_val": 53
+    }
+  ],
+  "auditoria": {
+    "pct_prueba_con_grupo_en_train_ingenua": 0.991,
+    "duplicados_exactos_prueba_en_train_ingenua": 20,
+    "ingenua": {
+      "umbral": 0.17,
+      "exactitud": 0.7607,
+      "auc": 0.9144,
+      "precision_afectada": 0.6855,
+      "recall_afectada": 0.9478,
+      "f1_afectada": 0.7956,
+      "precision_sana": 0.92,
+      "recall_sana": 0.5798,
+      "f1_sana": 0.7113,
+      "VP": 109.0,
+      "FN": 6.0,
+      "FP": 50.0,
+      "VN": 69.0,
+      "costo": 80.0
+    },
+    "corregida": {
+      "umbral": 0.22,
+      "exactitud": 0.822,
+      "auc": 0.9357,
+      "precision_afectada": 0.7484,
+      "recall_afectada": 0.9748,
+      "f1_afectada": 0.8467,
+      "precision_sana": 0.963,
+      "recall_sana": 0.6667,
+      "f1_sana": 0.7879,
+      "VP": 116.0,
+      "FN": 3.0,
+      "FP": 39.0,
+      "VN": 78.0,
+      "costo": 54.0
+    }
+  },
+  "clima_ventanas_60d": [
+    {
+      "fecha": "2019-04-09",
+      "dias_ventana": 60,
+      "T2M_media_60d": 25.8,
+      "RH2M_media_60d": 85.824,
+      "PRECTOTCORR_suma_60d": 643.78,
+      "WS2M_media_60d": 1.569
+    },
+    {
+      "fecha": "2019-04-10",
+      "dias_ventana": 60,
+      "T2M_media_60d": 25.789,
+      "RH2M_media_60d": 85.88,
+      "PRECTOTCORR_suma_60d": 641.95,
+      "WS2M_media_60d": 1.571
+    },
+    {
+      "fecha": "2019-04-11",
+      "dias_ventana": 60,
+      "T2M_media_60d": 25.792,
+      "RH2M_media_60d": 85.803,
+      "PRECTOTCORR_suma_60d": 627.27,
+      "WS2M_media_60d": 1.562
+    },
+    {
+      "fecha": "2019-05-01",
+      "dias_ventana": 60,
+      "T2M_media_60d": 25.666,
+      "RH2M_media_60d": 86.153,
+      "PRECTOTCORR_suma_60d": 518.38,
+      "WS2M_media_60d": 1.529
+    },
+    {
+      "fecha": "2019-05-02",
+      "dias_ventana": 60,
+      "T2M_media_60d": 25.659,
+      "RH2M_media_60d": 86.21,
+      "PRECTOTCORR_suma_60d": 517.76,
+      "WS2M_media_60d": 1.537
+    }
+  ]
+}
