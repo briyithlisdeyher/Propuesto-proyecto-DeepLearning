@@ -1,73 +1,186 @@
 # Propuesta de Datos · Proyecto Centinela · Fase 1
 
+## 0. Encabezado
+
 | Campo | Detalle |
-| --- | --- |
-| Título del proyecto | **Centinela del Cacao: alerta temprana de monilia (*Moniliophthora roreri*) en mazorcas** |
-| Integrantes | Briyith Lisdey Herrera Cruz _ Juan Pablo Becerra Tirano _ Johnatan Vélez Martínez |
-| Fecha | 2026-10-30 |
-| Versión | v1 (Fase 1) |
+|---|---|
+| Título del proyecto | Centinela del Café: alerta temprana de hojas de café robusta afectadas (ácaro rojo o roya) |
+| Integrantes | Briyith Lisdey Herrera Cruz · Juan Pablo Becerra Tirano · Johnatan Vélez Martínez |
+| Fecha | 2026-11-04 |
+| Versión | v2 (Fase 1). Sustituye a la v1 del 2026-10-30 (cacao/monilia) |
+| Fecha de aprobación en compuerta | `[AAAA-MM-DD — la registra el docente]` |
+
+> **Motivo del cambio de v1 a v2.** Los autores del dataset de cacao (doi:10.17632/ykbtpsyfv9.1) confirmaron que las fotos se tomaron en las provincias de Tocache, Huallaga y Rioja. Pero ninguna imagen registra dónde se tomó, así que no existe una clave de alineación por imagen con la serie climática. RoCoLe proviene de un único sitio georreferenciado y conserva la fecha de captura en el EXIF de cada imagen. El detalle está en [docs/justificacion_cambio_dataset.md](docs/justificacion_cambio_dataset.md).
 
 ## 1. Problema, cliente y objetivo binario
 
-- **Evento de riesgo y cliente:** dar una **alerta de monilia** para la **Federación Nacional de Cacaoteros (Fedecacao)** y sus técnicos de extensión, combinando dos preguntas: *¿la mazorca fotografiada ya muestra monilia?* (lo que se **ve**) y *¿el clima de las últimas semanas favoreció la infección?* (lo que **viene**, porque los síntomas aparecen semanas después del contagio).
-- **Impacto:** la monilia puede destruir una parte grande de la cosecha. Retirar a tiempo las mazorcas enfermas, antes de que esporulen, y reforzar la vigilancia cuando el clima es favorable reduce el contagio en el lote. La herramienta apoya al técnico; no lo reemplaza.
-- **Objetivo binario:** `monilia = 1` (mazorca con síntomas de monilia) / `monilia = 0` (mazorca sana). Es el mismo objetivo en la Fase 1 (solo imagen) y en la fusión de la Fase 2 (imagen + clima). En la Fase 2 la rama de imagen se entrena con **3 categorías** (sana / monilia temprana / monilia avanzada) para cumplir el requisito por rama, y la alerta se vuelve binaria agrupando «temprana + avanzada = monilia». Se pierde el estadio, que se reporta aparte como información para el técnico. Error más costoso: el **falso negativo**, porque una mazorca enferma que no se retira esporula y contagia el lote. El falso positivo cuesta una revisión manual o una mazorca sana retirada. Por eso el umbral se elige en validación con un *recall* mínimo de 0,90 para la clase monilia.
+- **Evento y cliente.** Las **organizaciones de monitoreo fitosanitario** necesitan que sus **técnicos de sanidad vegetal** sepan qué hojas de café revisar primero. El sistema les entrega una alerta a partir de una foto de la hoja tomada con celular.
+- **Impacto.** Una hoja con roya o ácaro que no se detecta sigue esporulando o reproduciéndose y contagia el lote. Detectarla temprano permite actuar de forma focalizada.
+- **Objetivo binario: ¿hoja afectada? sí/no.** RoCoLe trae 6 clases: sana, ácaro rojo y roya de niveles 1 a 4. Se agrupan así:
+  - `afectada = 0` si la hoja está **sana** (791 hojas).
+  - `afectada = 1` si tiene **ácaro rojo o roya de cualquier nivel** (769 hojas).
+  - *Información que se pierde:* el tipo de afección y su severidad. Se conservan como columnas para el análisis por subgrupo.
+- **Unidad de análisis:** la hoja. Hay una hoja anotada por imagen.
+- **Error más costoso: el falso negativo.** Se asume FN:FP = **5:1**, dentro del rango de 3 a 8 veces que cuesta dejar pasar un defecto en un control de calidad. Meta: *recall* de la clase afectada ≥ 0,90, con el umbral elegido en validación.
 
-## 2. Las dos modalidades del sistema completo
+## 2. Las dos modalidades del sistema
 
-- **Rama de imagen:** foto RGB de una mazorca individual, tomada con cámara digital o celular. Muestra los síntomas visibles: gibas, manchas marrones aceitosas y el micelio blanco de la esporulación.
-- **Rama temporal:** clima diario de **NASA POWER** (satélite + reanálisis MERRA-2): temperatura a 2 m (`T2M`), humedad relativa (`RH2M`), lluvia corregida (`PRECTOTCORR`) y viento (`WS2M`). Va de 2001 a 2026, unas 9.400 observaciones por punto, por encima del mínimo de 1.000 que exige la Fase 2.
-- **Pregunta de control: ¿la imagen contiene algo que un número no contenga?** **Sí.** El clima dice si las condiciones *favorecen* la infección, pero no si *esta* mazorca está enferma. La lesión y la esporulación solo se ven en la imagen. Son dos instrumentos físicamente independientes: una cámara y un satélite/reanálisis.
+| Rama | Qué representa | Instrumento | Frecuencia | Señal |
+|---|---|---|---|---|
+| Imagen | Foto RGB del haz o el envés de una hoja | Celulares Samsung de 5 MP (SM-J200M, SM-J700M, SM-G610M, SM-J320H) a 200–300 mm | Una foto por hoja | Pústulas anaranjadas, clorosis, bronceado y textura |
+| Temporal | Clima diario: `T2M`, `RH2M`, `PRECTOTCORR`, `WS2M` | NASA POWER (reanálisis y satélite; comunidad AG) | Diaria | Condiciones favorables a la roya y al ácaro (humedad, temperatura, lluvia) |
 
-## 3. Fuentes (con enlaces y licencia)
+**¿La imagen contiene algo que un número no?** Sí. El clima indica si las condiciones *favorecen* la afección, pero no si *esta* hoja está afectada.
 
-| Modalidad | Fuente (productor primario) | Enlace o DOI | Licencia y versión | Dónde se verificó la licencia | ¿Datos de personas? |
-| --- | --- | --- | --- | --- | --- |
-| Imagen | Rengifo-Lozano y Sánchez-Flores, *Image Dataset of Healthy and Monilia-Infected Cocoa Pods* (Mendeley Data, v1, 2026-10-08) | https://doi.org/10.17632/ykbtpsyfv9.1 | CC BY 4.0 | Ficha del DOI en Mendeley Data (2026-10-30) | No previstos (mazorcas).|
-| Temporal | NASA Langley Research Center, POWER Project (API diaria, comunidad AG) | https://power.larc.nasa.gov/ | Datos NASA de libre uso, con atribución | Página de la fuente | No |
+## 3. Fuentes
+
+| Modalidad | Fuente (productor primario) | Enlace o DOI | Licencia y versión | Dónde se verificó | ¿Datos personales? |
+|---|---|---|---|---|---|
+| Imagen | Parraga-Alava, Cusme, Loor y Santander (ESPAM MFL / USACH) | https://doi.org/10.17632/c5yvn32dzg.2 | CC BY 4.0 · v2 (2019-05-17) | Página de Mendeley Data y API pública de Mendeley | Solo el campo `Created By` (identifica al anotador) → **se elimina** (Anexo C). Las imágenes no contienen personas identificables |
+| Temporal | NASA Langley Research Center, POWER Project | https://power.larc.nasa.gov/ | Uso libre con atribución | Página *Data Access / Citation* de POWER | No |
 
 ## 4. Por qué NO es un reto resuelto
 
-- **Dato crudo:** 8,24 GB en dos archivos `.rar` (`Monilia.rar` 5,32 GB y `Sanos.rar` 2,93 GB), con imágenes en resolución original, unos 3,8 MB por foto. No trae partición, CSV de rasgos ni balanceo: 1.342 con monilia (61,4 %) y 842 sanas (38,6 %). Exige EDA: archivos corruptos, resoluciones heterogéneas, fondos de campo y posibles **casi duplicados** (ráfagas de la misma mazorca), que se detectan con pHash.
-- **No es Kaggle:** publicado el 2026-10-08 directamente en Mendeley Data. Búsqueda preliminar de espejos el 2026-10-30: sin coincidencias (se confirma en kaggle.com/datasets en el anexo B).
-- **Sin solución pública:** no hay artículo ni cuaderno asociado en la ficha. Tampoco existe una versión emparejada con clima: ese acoplamiento es aporte propio.
-- **No es el escenario vetado** (tulipán/KNMI) ni el de referencia (café/RoCoLe).
+- **Datos crudos.**
+  - No traen partición ni tabla de rasgos: el notebook extrae 28 rasgos de la hoja a partir del polígono anotado.
+  - El CSV de anotaciones llega con 1.560 × 18 celdas y 23,5 % de faltantes.
+  - Hay **67 grupos de imágenes idénticas byte a byte** entre plantas distintas; en 27 de ellos las copias tienen clase multiclase distinta.
+  - Los nombres de archivo y el EXIF hay que parsearlos.
+- **Estructura dependiente.** Hay 4 fotos por planta y duplicados que encadenan plantas, así que la partición debe ser agrupada.
+- **Kaggle:** existen notebooks que usan RoCoLe (Anexo B). Por los títulos que se pudieron leer, son clasificadores de imagen. **Ninguno de esos tres cruza RoCoLe con clima** ni construye la clave `(sitio, fecha EXIF)`. Los datos de este proyecto se descargan de la **fuente primaria** (Mendeley) y se verifican contra ella por SHA-256.
+- RoCoLe aparece en el catálogo del curso como fuente permitida. No es el escenario vetado (tulipán/KNMI).
 
 ## 5. Plan de la Fase 1, clave de alineación y prueba de acoplamiento
 
-- **Modalidad que se modela en la Fase 1 (aplanada a tabla): la imagen.** Cada foto se reduce a 256 px y se resume en unos 24 rasgos: media y desviación por canal RGB y HSV, índice de exceso de verde (ExG), % de píxeles «marrón lesión» y «blanco micelio» (umbrales HSV), y contraste, homogeneidad y entropía GLCM. Esa tabla entra a un MLP de dos capas ocultas en PyTorch.
-- **Paso a la Fase 2 (CNN + LSTM/GRU + fusión, como pide la guía):**
-  - **Rama A (imagen, CNN):** CNN con aprendizaje por transferencia (ResNet-18 o MobileNetV3) sobre las fotos crudas, más Grad-CAM. Reemplaza los rasgos de la Fase 1. Usa **3 categorías**: *sana* (842), *monilia temprana* (gibas o mancha marrón **sin** micelio) y *monilia avanzada* (micelio blanco visible). La subdivisión de las 1.342 fotos con monilia se hace a mano en unas 3 h con un protocolo escrito. Se reetiquetan 100 fotos al azar días después para medir la consistencia (kappa de Cohen), y se declara que la etiqueta la puso el estudiante, no un fitopatólogo.
-  - **Rama B (serie, LSTM o GRU):** NASA POWER diario 2001–2026 (unos 9.400 días). Entrada: ventanas de 60 días con `T2M`, `RH2M`, `PRECTOTCORR` y `WS2M`. Salida: «¿la semana siguiente será de alta favorabilidad climática para monilia?», definida como ≥ 5 de 7 días con `RH2M` ≥ 85 % y `PRECTOTCORR` ≥ 1 mm; el umbral se justifica con literatura en la v2. La partición es cronológica (entrenamiento hasta 2018, validación 2019–2021, prueba 2022–2026) y el escalado se ajusta solo con entrenamiento. Se declara que esta etiqueta es un **indicador climático**, no una incidencia observada de la enfermedad.
-  - **Rama C (fusión intermedia):** por cada foto se concatenan el *embedding* de la CNN y el estado final de la LSTM, calculado sobre los 60 días previos al mes de captura según la clave de alineación. Una cabeza densa predice `monilia` sí/no. **Ablación:** solo imagen / solo clima / fusión, todas con la misma partición. Si el clima no aporta (rasgo casi constante), se reporta como hallazgo.
-- **Clave de alineación:**
-  - [x] **Agregada: (región de origen de las fotos, mes de captura).** El mes sale de `DateTimeOriginal` del EXIF y la región, del EXIF GPS (redondeado a municipio) o de la confirmación de los autores.
-  - **Salvedad de fuga:** todas las fotos de un mismo mes heredan la misma ventana climática. Por eso, en la fusión de la Fase 2 la partición se hace **por mes**, no por foto. Además, los años de prueba de la rama B no se usan para entrenar la LSTM que alimenta la fusión.
-  - **Salvedad de rasgo casi constante:** si todas las fotos son de pocos meses, el clima casi no varía y no discrimina. Se reporta así.
-  - **Si el EXIF no trae fecha ni lugar:** se escribe a los autores y la v1 declara la clave como (región declarada, periodo de publicación), con la limitación explícita.
-  - **Retardo biológico:** los síntomas visibles aparecen semanas después de la infección. Por eso la ventana climática asociada a cada foto son los **60 días previos** al mes de captura, no el mismo día.
-
+- **Modalidad que se aplana en la Fase 1:** la **imagen**. Cada hoja se convierte en 28 rasgos de color, lesión, índices, textura y forma; 27 de ellos entran a un MLP de PyTorch con dos capas ocultas.
+- **Paso a la Fase 2:**
+  - Rama de imagen: CNN con *transfer learning*.
+  - Rama temporal: LSTM/GRU sobre los **60 días previos** de NASA POWER.
+  - Fusión por concatenación de *embeddings*.
+- **Clave de alineación (por muestra):** `(sitio = CIIDEA [−0,834206; −80,177159], fecha de captura = EXIF DateTimeOriginal)`.
+  - La ventana climática va de `d−60` a `d−1`, sin incluir el día de captura.
+  - Se verificó en el notebook (§1.4): las 1.560 imágenes tienen fecha, y hay 5 días distintos (2019-04-09, 04-10, 04-11, 05-01 y 05-02).
+- **Limitación declarada:** las 5 ventanas de 60 días son casi idénticas (T2M de 25,66 a 25,80 °C; RH2M de 85,8 a 86,2 %). El clima aportará contexto de riesgo, no señal por hoja.
+- **Prueba de acoplamiento:** 10 filas reales en el Anexo A.
 
 ## 6. Línea base comprometida
 
-| Referencia | Detalle |
-| --- | --- |
-| Clase mayoritaria | La clase mayoritaria es **monilia** (61,4 %) |
-| ¿La modalidad aplanada resume un escalar? | Sí: **% de píxeles «marrón lesión»** (umbral HSV) |
-| Escalar crudo usado solo | Clasificador de un solo umbral sobre ese %, con el umbral elegido en validación y el desempeño reportado en prueba. |
-| Partición y semilla | Partición estratificada 70/15/15, `seed = 42`. Los casi duplicados (pHash ≤ 5) quedan **en el mismo subconjunto** (`GroupShuffleSplit`). Se conserva para la Fase 2. |
+Resultados en el **conjunto de prueba** (n = 236), con el umbral elegido en validación. Fuente: `resultados/metricas_prueba.csv`.
+
+| Modelo | Exactitud | *Recall* afectada | Costo 5·FN+FP |
+|---|---|---|---|
+| Clase mayoritaria (sana) | 0,496 | 0,000 | 595 |
+| Escalar crudo `pct_lesion` (umbral 0,0045) | 0,631 | 0,992 | 91 |
+| **MLP R3a (umbral 0,22)** | **0,822** | **0,975** | **54** |
+
+- **Partición:** 70,0 / 14,9 / 15,1 %, estratificada y **agrupada** por `id_grupo` (planta ∪ duplicados), con semilla 42.
+- Los duplicados **no se eliminan**.
+- La partición, la semilla, el umbral y las líneas base se conservan para la Fase 2 (`resultados/particion.csv`).
 
 ## 7. Riesgos éticos y protección de datos
 
-| Riesgo | Daño para el cliente | Mitigación |
-| --- | --- | --- |
-| Sesgo de muestreo o representatividad: las fotos son de un origen no colombiano o desconocido, con clones y luz distintos a los de las fincas de Fedecacao | El modelo falla en campo colombiano y el técnico confía en una herramienta que no se validó allí | Declarar el origen; reportar el desempeño por resolución y cámara si el EXIF lo permite; recomendar una validación piloto con fotos de Fedecacao antes de usarla |
-| Falsa alarma (mazorca sana marcada como enferma) | El productor retira mazorcas sanas o aplica fungicida sin necesidad: costo y daño ambiental | Umbral elegido por costo; la alerta pide confirmación visual del técnico; se reporta la tasa de falsos positivos |
-| Etiqueta de estadio (temprana/avanzada) puesta por un no experto (Fase 2) | El modelo aprende el criterio del estudiante, no el de un fitopatólogo, y el estadio que se informa puede estar equivocado | Protocolo escrito con fotos de referencia, kappa de reetiquetado reportado y la alerta binaria (que usa la etiqueta original de los autores) como salida principal |
-| Alarma omitida (mazorca enferma marcada como sana) | La mazorca esporula y contagia el lote, con pérdida de cosecha y de ingreso del pequeño productor | Exigir *recall* de monilia ≥ 0,90 en validación; analizar los falsos negativos con Grad-CAM (Fase 2); mensaje al usuario: «sin alerta ≠ sano» |
+| Riesgo | Daño al cliente | Mitigación |
+|---|---|---|
+| Sesgo de muestreo: un solo sitio, solo robusta, 5 días, 4 celulares | Mal desempeño en arábica o en fincas colombianas | Declarar el dominio de validez; piloto local antes de usarlo |
+| Falsa alarma (FP) | Visitas o aplicaciones innecesarias | Umbral por costo; confirmación del técnico; tasa de FP reportada por celular (va de 0,10 a 0,54) |
+| Omisión de alarma (FN) | Foco no tratado | *Recall* ≥ 0,90 (se obtuvo 0,975); aviso "sin alerta ≠ sana"; *recall* por severidad |
+| Ruido de etiqueta (27 grupos de duplicados con clase distinta) | Métricas ruidosas | Se reporta, no se corrige a mano y se agrupa en la partición |
+| Dato del anotador (`Created By`) | Exposición de un dato personal | Se elimina al cargar (Anexo C) |
 
+## 8. Citas APA 7
 
-## 8. Cita APA 7 de cada fuente
-
-- Rengifo-Lozano, D., & Sánchez-Flores, J. (2026). *Image dataset of healthy and Monilia-infected cocoa pods for disease classification* (Version 1) [Data set]. Mendeley Data. https://doi.org/10.17632/ykbtpsyfv9.1
+- Parraga-Alava, J., Cusme, K., Loor, A., & Santander, E. (2019). *RoCoLe: A robusta coffee leaf images dataset* (Version 2) [Data set]. Mendeley Data. https://doi.org/10.17632/c5yvn32dzg.2
 - NASA Langley Research Center. (2026). *Prediction of Worldwide Energy Resources (POWER) Project: Daily agroclimatology data* [Data set]. https://power.larc.nasa.gov/
+
+---
+
+## Anexo A · Prueba de acoplamiento (10 filas reales)
+
+- **Generadas por:** notebook §3.2, a partir de `df.groupby("fecha").sample(2, random_state=42)` y la API de NASA POWER (`/api/temporal/daily/point`, comunidad AG).
+- **Archivo:** `resultados/acoplamiento_10_filas.csv`.
+
+| # | Clave (sitio, fecha) | Imagen · rasgo `pct_lesion` · clase | T2M media 60 d (°C) | RH2M media 60 d (%) | PRECTOTCORR suma 60 d (mm) | WS2M media 60 d (m/s) |
+|---|---|---|---|---|---|---|
+| 1 | CIIDEA, 2019-04-09 | C9P20H1.jpg · 0,012 · roya 1 | 25,80 | 85,82 | 643,78 | 1,57 |
+| 2 | CIIDEA, 2019-04-09 | C9P15E1.jpg · 0,212 · roya 3 | 25,80 | 85,82 | 643,78 | 1,57 |
+| 3 | CIIDEA, 2019-04-10 | C6P14E2.jpg · 0,002 · sana | 25,79 | 85,88 | 641,95 | 1,57 |
+| 4 | CIIDEA, 2019-04-10 | C10P2E2.jpg · 0,012 · sana | 25,79 | 85,88 | 641,95 | 1,57 |
+| 5 | CIIDEA, 2019-04-11 | C11P28H1.jpg · 0,024 · sana | 25,79 | 85,80 | 627,27 | 1,56 |
+| 6 | CIIDEA, 2019-04-11 | C3P5E2.jpg · 0,177 · ácaro rojo | 25,79 | 85,80 | 627,27 | 1,56 |
+| 7 | CIIDEA, 2019-05-01 | C5P13E1.jpg · 0,042 · sana | 25,67 | 86,15 | 518,38 | 1,53 |
+| 8 | CIIDEA, 2019-05-01 | C5P28E1.jpg · 0,329 · roya 1 | 25,67 | 86,15 | 518,38 | 1,53 |
+| 9 | CIIDEA, 2019-05-02 | C1P14H1.jpg · 0,024 · sana | 25,66 | 86,21 | 517,76 | 1,54 |
+| 10 | CIIDEA, 2019-05-02 | C1P35E1.jpg · 0,040 · sana | 25,66 | 86,21 | 517,76 | 1,54 |
+
+## Anexo B · Prueba de origen
+
+**1. Cadena de procedencia.**
+- **Productor:** Parraga-Alava et al., en Mendeley Data (DOI 10.17632/c5yvn32dzg.2).
+- **Descarga local:** `data/raw/` el 2026-11-03 (mtime de los archivos). Verificación en el notebook el 2026-11-04.
+- **SHA-256:** el de cada archivo está en `resultados/manifiesto_sha256.csv`. Las anotaciones:
+
+| Archivo | Bytes | SHA-256 local = API Mendeley |
+|---|---|---|
+| RoCoLE-csv.csv | 2.220.101 | `a9aa6b411569dba7e9ba56fed79e5cd82af04a0ef092e56309158d632ac5205b` ✔ |
+| RoCoLE-json.json | 2.488.394 | `286b73725b7c027a6bc9a1118a281b026e1ec9e35c3510398ed6bbc0e579cf99` ✔ |
+| RoCoLE-coco.json | 1.813.080 | `beac06144c2865cd0ceb2ef3f81791334cf1674400184ff1aa123d1e67f7ec4f` ✔ |
+| RoCoLe-classes.xlsx | 39.437 | `0040a57ffd441bd69ead997309d14c8d7f6fdfc83c5dbdc47805e0bc4da05ef2` ✔ |
+
+- **Fotos:** 1.000 de 1.560 coinciden con el hash que publica la API. Las 560 restantes no aparecen en la lista de la API, que devuelve como máximo 1.000 archivos por carpeta (`content-range: items 0-999/1560`). Su hash local queda registrado.
+
+**2. Descarga trazable.**
+- Celda §1.1 del notebook. Busca primero `data/raw/` y, si no hay datos, descarga de `https://data.mendeley.com/public-api/zip/c5yvn32dzg/download/2`.
+- Celda §1.2: verifica los hashes contra `https://data.mendeley.com/public-api/datasets/c5yvn32dzg/files`.
+- No se usa `kaggle datasets download` ni rutas `/kaggle/input/`.
+
+**3. Búsqueda de espejos en Kaggle** (registrada el 2026-11-04; fecha de búsqueda del equipo: `[completar]`).
+
+| # | Coincidencia | Tipo | Observación |
+|---|---|---|---|
+| 1 | [Plant Disease Classification Train Dataset](https://www.kaggle.com/code/nirmalsankalana/plant-disease-classification-train-dataset) | Notebook (*code*) | Clasificación de enfermedades por imagen |
+| 2 | [leaf_disease_2](https://www.kaggle.com/code/nksusth/leaf-disease-2) | Notebook (*code*) | Clasificación de enfermedad de hoja |
+| 3 | [TensorFlow2. Image Classification. RoCoLe](https://www.kaggle.com/code/diegopgonzlez/tensorflow2-image-classification-rocole) | Notebook (*code*) | Clasificación de imágenes de RoCoLe con TensorFlow 2 |
+
+El contenido de esos notebooks no se pudo leer automáticamente (la página exige JavaScript). Las observaciones salen de sus títulos. `[El equipo debe confirmar con capturas qué dataset usa cada uno y qué métrica reporta.]`
+
+**4. Huella cruda (antes de limpiar).**
+- CSV de anotaciones: 1.560 filas × 18 columnas, con 23,5 % de celdas vacías. `Benchmark Agreement`, `Benchmark ID` y `Benchmark Reference ID` están 100 % vacías.
+- Imágenes: 1.560 JPEG en 3 resoluciones (1280×720, 2048×1152 y 4128×2322), de 4 dispositivos, con EXIF de orientación 6/8 y sin GPS.
+- Balance: 791 sanas / 769 afectadas.
+- Duplicados: 67 grupos byte a byte (134 imágenes); 27 con clase multiclase distinta y 1 con clase binaria distinta.
+- 8 imágenes con `state` del polígono inconsistente con su clase.
+- 1 nombre de archivo anómalo (`C11P11HE.jpg`).
+
+**5. Contraste con espejos.**
+- Los datos usados coinciden byte a byte con la **fuente primaria** (hash de Mendeley).
+- Se conservan las columnas originales de Labelbox, salvo `Created By`, y los metadatos EXIF (fecha y dispositivo). Esos metadatos son los que hacen posible la clave temporal.
+- `[Si un espejo de Kaggle redistribuye las imágenes, el equipo debe anotar si conserva el EXIF y las anotaciones originales.]`
+
+## Anexo C · Checklist de protección de datos (Ley 1581 de 2012)
+
+### Fuente 1: RoCoLe (Mendeley Data)
+
+| Sección | Verificación | Estado |
+|---|---|---|
+| A. Identificadores directos e indirectos | La columna **`Created By`** de `RoCoLE-csv.csv` y el campo `Created By` de `RoCoLE-json.json` identifican al anotador de Labelbox. **Se eliminan al cargar** (notebook §1.3, con `assert`) y no aparecen en ninguna salida ni exportación. Las imágenes muestran hojas; en algunas se ve parcialmente una mano o un dedo, que no es identificable. Ninguna tiene GPS | ☑ |
+| B. Datos sensibles (salud, biometría, etc.) | No aplica: son datos agronómicos | ☑ |
+| C. Datos de menores | No aplica | ☑ |
+| D. Base legal para datos de terceros | Datos públicos con licencia CC BY 4.0 | ☑ |
+| E. Finalidad declarada | Uso académico: alerta fitosanitaria | ☑ |
+| F. Desidentificación y riesgo de reidentificación | Al eliminar `Created By` se elimina el único identificador personal. Las columnas `Masks` y `View Label` contienen URL con *tokens* de Labelbox que no se usan ni se exportan | ☑ |
+| G. Obligaciones de la licencia (BY) | Se cita a los autores (APA 7) en el README, la Propuesta y el informe | ☑ |
+| H. Transferencia internacional | No se transfieren datos personales. Al asistente de IA solo se le compartieron esquemas y nombres de columnas, nunca valores de `Created By` | ☑ |
+| I. Minimización y retención | Del JSON solo se usan `External ID` y `Label`. Los datos crudos quedan locales (`data/raw/` está en `.gitignore`) | ☑ |
+| J. Publicación en el repositorio | Se publican rasgos derivados, hashes y nombres de archivo. No se publican imágenes, `Created By` ni *tokens* | ☑ |
+
+### Fuente 2: NASA POWER
+
+No contiene datos personales (A–C y F no aplican). Uso libre con atribución (G ☑). Se publica la serie diaria descargada (`data/external/`) con su cita.
+
+### Firmas
+
+| Integrante | Declaro que revisé esta lista | Fecha |
+|---|---|---|
+| Briyith Lisdey Herrera Cruz | `[firma]` | `[AAAA-MM-DD]` |
+| Juan Pablo Becerra Tirano | `[firma]` | `[AAAA-MM-DD]` |
+| Johnatan Vélez Martínez | `[firma]` | `[AAAA-MM-DD]` |
