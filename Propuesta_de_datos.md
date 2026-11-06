@@ -133,7 +133,7 @@ Resultados en el **conjunto de prueba** (n = 236), con el umbral elegido en vali
 - Celda §1.2: verifica los hashes contra `https://data.mendeley.com/public-api/datasets/c5yvn32dzg/files`.
 - No se usa `kaggle datasets download` ni rutas `/kaggle/input/`.
 
-**3. Búsqueda de espejos en Kaggle** (registrada el 2026-11-04; fecha de búsqueda del equipo: `[completar]`).
+**3. Búsqueda de espejos en Kaggle** (registrada el 2026-11-04; fecha de búsqueda del equipo: 2026-10-31).
 
 | # | Coincidencia | Tipo | Observación |
 |---|---|---|---|
